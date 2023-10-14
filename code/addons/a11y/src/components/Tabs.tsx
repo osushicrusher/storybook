@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { styled } from '@storybook/theming';
 import type { NodeResult, Result } from 'axe-core';
-import { useResizeDetector } from 'react-resize-detector';
 import HighlightToggle from './Report/HighlightToggle';
 
 import type { RuleType } from './A11YPanel';
@@ -22,29 +21,26 @@ const HighlightToggleLabel = styled.label(({ theme }) => ({
   color: theme.color.dark,
 }));
 
-const GlobalToggle = styled.div<{ elementWidth: number }>(({ elementWidth, theme }) => {
-  const maxWidthBeforeBreak = 450;
-  return {
-    cursor: 'pointer',
-    fontSize: 13,
-    lineHeight: '20px',
-    padding: elementWidth > maxWidthBeforeBreak ? '10px 15px 10px 0' : '10px 0px 10px 15px',
-    height: '40px',
-    border: 'none',
-    marginTop: elementWidth > maxWidthBeforeBreak ? -40 : 0,
-    float: elementWidth > maxWidthBeforeBreak ? 'right' : 'left',
-    display: 'flex',
-    alignItems: 'center',
-    width: elementWidth > maxWidthBeforeBreak ? 'auto' : '100%',
-    borderBottom: elementWidth > maxWidthBeforeBreak ? 'none' : `1px solid ${theme.appBorderColor}`,
+const GlobalToggle = styled.div({
+  cursor: 'pointer',
+  fontSize: 13,
+  lineHeight: '20px',
+  padding: '10px 15px 10px 0',
+  height: '40px',
+  border: 'none',
+  marginTop: -40,
+  float: 'right',
+  display: 'flex',
+  alignItems: 'center',
+  width: 'auto',
+  borderBottom: 'none',
 
-    input: {
-      marginLeft: 10,
-      marginRight: 0,
-      marginTop: -1,
-      marginBottom: 0,
-    },
-  };
+  input: {
+    marginLeft: 10,
+    marginRight: 0,
+    marginTop: -1,
+    marginBottom: 0,
+  },
 });
 
 const Item = styled.button<{ active?: boolean }>(
@@ -99,11 +95,6 @@ function retrieveAllNodesFromResults(items: Result[]): NodeResult[] {
 }
 
 export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
-  const { ref, width } = useResizeDetector({
-    refreshMode: 'debounce',
-    handleHeight: false,
-    handleWidth: true,
-  });
   const { tab: activeTab, setTab } = useA11yContext();
 
   const handleToggle = React.useCallback(
@@ -116,7 +107,7 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
   const highlightToggleId = `${tabs[activeTab].type}-global-checkbox`;
   const highlightLabel = `Highlight results`;
   return (
-    <Container ref={ref}>
+    <Container>
       <List>
         <TabsWrapper>
           {tabs.map((tab, index) => (
@@ -133,7 +124,7 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
         </TabsWrapper>
       </List>
       {tabs[activeTab].items.length > 0 ? (
-        <GlobalToggle elementWidth={width || 0}>
+        <GlobalToggle>
           <HighlightToggleLabel htmlFor={highlightToggleId}>{highlightLabel}</HighlightToggleLabel>
           <HighlightToggle
             toggleId={highlightToggleId}
